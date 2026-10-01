@@ -118,8 +118,8 @@ export const Hero: React.FC<HeroProps> = ({ onLocationClick, onServicesClick }) 
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-[#2A4D78] bg-[#112240]">
               <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden">
                 <img
-                  src="/src/assets/images/hero_printing_press_1790843426570.jpg"
-                  alt="Sangram Printing Studio digital large format flex printer"
+                  src="/images/hero_resin_art_craft.jpg"
+                  alt="Sangram Resin Art bespoke handcrafted resin art and digital printing studio"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover transform hover:scale-103 transition-transform duration-700"
                 />
@@ -129,10 +129,10 @@ export const Hero: React.FC<HeroProps> = ({ onLocationClick, onServicesClick }) 
                 {/* Overlaid Badge */}
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <div className="text-[11px] font-bold text-[#D4AF37] tracking-wider uppercase mb-1">
-                    Production Unit
+                    Artisan &amp; Production Studio
                   </div>
                   <div className="text-sm sm:text-base font-heading font-semibold text-white drop-shadow-sm">
-                    Large-format digital flex, vinyl &amp; offset press machines
+                    Bespoke epoxy resin masterpieces &amp; large-format print media
                   </div>
                 </div>
               </div>

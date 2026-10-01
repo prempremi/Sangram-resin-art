@@ -20,7 +20,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     categoryLabel: 'Name Plates',
     title: 'Bespoke Resin & Teakwood Name Boards',
     subtitle: 'Luxury entrance & door name plates with gold accents',
-    image: '/src/assets/images/resin_name_plates_1790842724103.jpg',
+    image: '/images/resin_name_plates.jpg',
     description: 'Custom handcrafted house and office name plates made with aged natural wood, crystal-clear epoxy resin, and lustrous gold foil lettering. Weatherproof and UV-resistant for lifelong brilliance.',
     features: [
       'Custom fonts & language scripts (English, Odia, Hindi)',
@@ -39,7 +39,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     categoryLabel: 'Wall Art',
     title: 'Geode & Ocean Wave Resin Wall Art',
     subtitle: 'Striking statement wall clocks & textured geode canvases',
-    image: '/src/assets/images/resin_wall_art_1790842744906.jpg',
+    image: '/images/resin_wall_art.jpg',
     description: 'Captivating fluid resin artwork incorporating natural mineral crystals, crushed quartz, metallic pigment swirls, and hand-gilded 24k gold veins that catch sunlight at every angle.',
     features: [
       'Multi-layered 3D depth and shimmer effect',
@@ -58,7 +58,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     categoryLabel: 'Customized Gifts',
     title: 'Personalized Keepsakes & Preserved Memories',
     subtitle: 'Wedding garland preservation, resin photo frames & gift sets',
-    image: '/src/assets/images/resin_custom_gifts_1790842758458.jpg',
+    image: '/images/resin_custom_gifts.jpg',
     description: 'Transform special memories into eternal art. We preserve wedding garlands (varmala), memorable photographs, milestone dates, and personal tokens inside ultra-clear glass-like resin.',
     features: [
       'Varmala / wedding flower drying & preservation technique',
@@ -77,7 +77,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     categoryLabel: 'Decorative Items',
     title: 'Artisanal Trays, Coasters & Table Accents',
     subtitle: 'Hand-poured resin decor with brass handles & gold leaf dust',
-    image: '/src/assets/images/resin_decorative_items_1790842767822.jpg',
+    image: '/images/resin_decorative_items.jpg',
     description: 'Functional luxury for your dining and coffee table. Serving trays featuring raw live-edge wood inlays, swirling ivory marble patterns, and matching hexagonal drink coaster sets.',
     features: [
       'Heat resistant up to 90°C for hot beverage mugs',
