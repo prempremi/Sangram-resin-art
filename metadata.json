@@ -1,0 +1,8 @@
+{
+  "name": "Sangram Resin Art",
+  "description": "Sangram Resin Art - Handcrafted bespoke resin art pieces, custom resin name plates, wall clocks, and complete printing & banner design services in Odisha, India.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
