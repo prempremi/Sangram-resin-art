@@ -1,14 +1,34 @@
 import React, { useState } from 'react';
-import { Menu, X, Phone, MapPin, Printer } from 'lucide-react';
+import { Menu, X, Phone, MapPin, Printer, ShieldCheck, User as UserIcon, LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  onNavigateToAdmin?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onNavigateToAdmin }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
+  const { user, isAdmin, openAuthModal, logout } = useAuth();
 
   const scrollTo = (id: string) => {
     setMobileMenuOpen(false);
+    setUserDropdownOpen(false);
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleAdminClick = () => {
+    setMobileMenuOpen(false);
+    setUserDropdownOpen(false);
+    if (onNavigateToAdmin) {
+      onNavigateToAdmin();
+    } else {
+      window.history.pushState({}, '', '/admin-dashboard');
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
   };
 
@@ -39,12 +59,19 @@ export const Navbar: React.FC = () => {
           </a>
 
           {/* Zone 2: Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-[#CBD5E1]">
+          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-[#CBD5E1]">
             <button
               onClick={() => scrollTo('services')}
               className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1"
             >
-              Services &amp; Resin Art
+              Services Catalog
+            </button>
+            <button
+              onClick={() => scrollTo('resin-products')}
+              className="hover:text-[#D4AF37] transition-colors cursor-pointer py-1 flex items-center gap-1 text-[#F1F5F9]"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>Resin Products</span>
             </button>
             <button
               onClick={() => scrollTo('why-us')}
@@ -72,30 +99,87 @@ export const Navbar: React.FC = () => {
             </button>
           </nav>
 
-          {/* Zone 3: Primary Actions */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Zone 3: Primary Actions + Authentication Controls */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            
+            {/* Direct Call Link */}
             <a
               href="tel:+917381522808"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#112240] hover:bg-[#1E3A5F] rounded-lg transition-colors border border-[#1E3A5F] whitespace-nowrap"
+              className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#112240] hover:bg-[#1E3A5F] rounded-lg transition-colors border border-[#1E3A5F] whitespace-nowrap"
               title="Call Sangram Resin Art"
             >
               <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>+91 73815 22808</span>
             </a>
 
+            {/* Visit Shop Button */}
             <button
               onClick={() => scrollTo('location')}
-              className="px-4 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-[#0A192F] bg-[#D4AF37] hover:bg-[#B89628] rounded-lg transition-all shadow-xs cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+              className="hidden sm:inline-flex px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-[#0A192F] bg-[#D4AF37] hover:bg-[#B89628] rounded-lg transition-all shadow-xs cursor-pointer items-center gap-1.5 whitespace-nowrap"
             >
               <MapPin className="w-3.5 h-3.5 text-[#0A192F]" />
               <span>Visit Shop</span>
             </button>
 
+            {/* Authentication Buttons (User / Admin) */}
+            {user ? (
+              <div className="relative">
+                {isAdmin ? (
+                  <button
+                    onClick={handleAdminClick}
+                    className="px-3 py-1.5 sm:py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                    title="Access Admin Dashboard"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Dashboard</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="px-3 py-1.5 sm:py-2 rounded-lg bg-[#112240] hover:bg-[#1E3A5F] text-slate-200 border border-[#2A4D78] font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <UserIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span className="max-w-[80px] truncate">{user.name.split(' ')[0]}</span>
+                  </button>
+                )}
+
+                {/* Dropdown for User */}
+                {userDropdownOpen && !isAdmin && (
+                  <div className="absolute right-0 mt-2 w-48 bg-[#0A192F] border border-[#1E3A5F] rounded-xl shadow-xl p-2 z-50 animate-in fade-in duration-150">
+                    <div className="px-3 py-2 border-b border-[#1E3A5F] text-xs">
+                      <div className="font-bold text-white truncate">{user.name}</div>
+                      <div className="text-[10px] text-slate-400 truncate">{user.email}</div>
+                      <div className="text-[10px] text-[#D4AF37] mt-0.5">Role: Customer</div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs text-red-400 hover:bg-[#112240] rounded-lg mt-1 flex items-center gap-2 cursor-pointer"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => openAuthModal('login')}
+                className="px-3 py-1.5 sm:py-2 rounded-lg bg-[#112240] hover:bg-[#1E3A5F] text-slate-200 hover:text-white border border-[#2A4D78] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Account Login / Sign Up"
+              >
+                <UserIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span className="hidden sm:inline">Sign In</span>
+              </button>
+            )}
+
             {/* Mobile menu trigger */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-slate-200 hover:bg-[#112240] transition-colors"
+              className="lg:hidden p-2 rounded-lg text-slate-200 hover:bg-[#112240] transition-colors cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -113,7 +197,14 @@ export const Navbar: React.FC = () => {
               onClick={() => scrollTo('services')}
               className="text-left py-2.5 px-3 rounded-lg text-base font-medium text-white hover:bg-[#112240]"
             >
-              Resin Art &amp; Printing Services
+              Services Catalog
+            </button>
+            <button
+              onClick={() => scrollTo('resin-products')}
+              className="text-left py-2.5 px-3 rounded-lg text-base font-bold text-[#D4AF37] hover:bg-[#112240] flex items-center gap-2"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Resin Products (Keychains, Frames &amp; Gifts)</span>
             </button>
             <button
               onClick={() => scrollTo('why-us')}
@@ -139,6 +230,17 @@ export const Navbar: React.FC = () => {
             >
               Inquire / Send Message
             </button>
+
+            {/* If Admin, Mobile Drawer shortcut */}
+            {isAdmin && (
+              <button
+                onClick={handleAdminClick}
+                className="text-left py-2.5 px-3 rounded-lg text-base font-bold text-amber-300 bg-[#112240] hover:bg-[#1E3A5F] flex items-center gap-2"
+              >
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span>Open Admin Dashboard</span>
+              </button>
+            )}
           </div>
 
           <div className="pt-2 flex flex-col gap-2.5">
@@ -158,6 +260,30 @@ export const Navbar: React.FC = () => {
               <MapPin className="w-4 h-4" />
               <span>Get Directions to Store</span>
             </a>
+
+            {!user ? (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openAuthModal('login');
+                }}
+                className="w-full py-2.5 px-4 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-2"
+              >
+                <UserIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Sign In / Create Account</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  logout();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-2.5 px-4 rounded-lg bg-red-500/10 text-red-400 text-xs font-semibold flex items-center justify-center gap-2"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sign Out ({user.email})</span>
+              </button>
+            )}
           </div>
         </div>
       )}

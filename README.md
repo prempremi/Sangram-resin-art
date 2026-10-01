@@ -9,13 +9,42 @@
 
 **Sangram Resin Art** is a modern, mobile-first business website built with **React 19**, **Vite 8**, **TypeScript**, and **Tailwind CSS**. It is tailored for local in-person conversion, store directions, and direct customer consultations via Phone and WhatsApp.
 
-### Key Highlights:
-- **Resin Art Collections**: Custom teakwood and acrylic name plates, geode clocks with quartz crystals, preserved wedding flower (varmala) blocks, and live-edge serving trays.
-- **Commercial Printing & Signage**: Flex banners, self-adhesive vinyl prints, visiting cards, traditional Indian wedding invitations, photo enlargements, and 3D acrylic LED storefront boards.
-- **Offline Business Architecture**: Clear notices directing customers to the physical studio in Odisha for custom material proofs and collection.
+### Upgraded Key Highlights:
+- **Resin Products Section (Display Only)**: Dedicated showcase for **Keychains**, **Photo Frames**, and **Custom Gifts** (wedding varmala flower preservation blocks). Strictly display-only (no e-commerce, no cart) directing customers to visit the Odisha studio.
+- **Production Authentication & Role System**:
+  - Secure JWT authentication with PBKDF2 cryptographic password hashing (100,000 iterations SHA-512) and constant-time timing-safe verification.
+  - Signed JSON Web Tokens (HS256) with 7-day expiration and automatic session validation on app load.
+  - Auth is **NOT required** for public browsing: visitors can freely view all products, print services, gallery items, and submit offline inquiries without signing in.
+  - **Two Roles**:
+    - **Admin**: Full access to `/admin-dashboard`, visitor analytics, photo upload system, and private vault.
+    - **User**: Customer role; can log in and view their customer status, but restricted from the admin dashboard.
+- **Admin Dashboard (`/admin-dashboard`)**:
+  - Protected route with client-side and server-side role validation (non-admins are automatically redirected).
+  - **Visitor Analytics**: Real-time tracking of total visitors, page views, device breakdown (mobile vs desktop), and recent visitor logs.
+  - **Photo Upload System**: Upload new photos with title, category, caption, and image preview.
+  - **Private Gallery Vault (Admin Only)**: Photos marked as "Private" remain strictly inside the admin vault.
+  - **Public Gallery Toggle Control**: 1-click toggle switch to publish private photos live to the website or pull public photos back into the private vault.
 - **Interactive Google Map Integration**: Exact geolocation pin with one-tap directions (`20.769753, 86.468659`).
 - **Direct Conversion Channels**: Integrated FormSubmit inquiry form, direct click-to-call (`+91 73815 22808`), and pre-filled WhatsApp ordering links.
-- **Floating Controls**: Smart scroll-detected floating **"Back to Top"** button and mobile sticky action bar complying with the mobile viewport height budget.
+- **Floating Controls**: Smart scroll-detected floating **"Back to Top"** button and mobile sticky action bar.
+
+---
+
+## 🔐 Administrator Access & Registration
+
+### Initial Store Administrator
+The store owner account is pre-registered on first launch:
+* **Administrator Email**: `rubixcubesolver649@gmail.com` (or `admin@sangramresinart.com`)
+* **Default Setup Password**: `Sangram@2026`
+
+*(You can update your password or create additional accounts at any time through the Sign Up modal).*
+
+### Registering New Staff / Administrators
+To register a new administrator account, click **"Create Account"** in the navigation, expand **"Have an Admin Registration Key?"**, and enter the studio administrator passkey:
+```
+sangram_admin_key_2026
+```
+*(This can be customized via the `ADMIN_REGISTRATION_KEY` environment variable).*
 
 ---
 
@@ -23,8 +52,8 @@
 
 This repository is pre-configured and 100% production-ready for deployment on **Vercel**.
 
-### Option 1: Via Vercel Dashboard (Recommended)
-1. Push this repository to your **GitHub** account.
+### Via Vercel Dashboard
+1. Push this repository to your **GitHub** account (`rubixcubesolver649-sudo/Sangram-resin-art`).
 2. Go to [vercel.com](https://vercel.com) and log in.
 3. Click **"Add New..."** → **"Project"**.
 4. Select your GitHub repository **`sangram-resin-art`**.
@@ -33,39 +62,24 @@ This repository is pre-configured and 100% production-ready for deployment on **
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
    - **Install Command**: `npm install`
-6. Click **Deploy**! Your website will be live with free SSL in less than 60 seconds.
-
-### Option 2: Via Vercel CLI
-```bash
-npm install -g vercel
-vercel
-```
+6. Click **Deploy**!
 
 ---
 
 ## 🛠️ Local Development & Build
 
-### Prerequisites
-- Node.js (v18 or higher recommended)
-- npm or pnpm
-
-### Quick Start
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/sangram-resin-art.git
-cd sangram-resin-art
-
-# 2. Install dependencies
+# 1. Install dependencies
 npm install
 
-# 3. Start local development server (runs on port 3000)
+# 2. Start development server (runs on port 3000)
 npm run dev
 
-# 4. Build for production (output to dist/)
+# 3. Build for production (output to dist/)
 npm run build
 
-# 5. Preview production build locally
-npm run preview
+# 4. Run full-stack production server
+npm run start
 ```
 
 ---
@@ -73,29 +87,37 @@ npm run preview
 ## 📁 Project Architecture
 
 ```
-├── public/                 # Static assets copied directly to dist/ (production-ready)
-│   └── images/             # High-resolution resin art & printing photography
+├── public/                     # Static assets copied directly to dist/
+│   └── images/                 # High-resolution resin art & printing photography
 ├── src/
-│   ├── components/         # Modular React components
-│   │   ├── Navbar.tsx          # Top bar with offline notice & mobile drawer
-│   │   ├── Hero.tsx            # Business hero with CTAs and proof markers
-│   │   ├── ServicesSection.tsx # Catalog grid with category filter
-│   │   ├── WhyChooseUs.tsx     # 5 key competitive advantages
-│   │   ├── GallerySection.tsx  # Work showcase with category filtering
-│   │   ├── LocationSection.tsx # Interactive Google Map & visit guide
-│   │   ├── ContactSection.tsx  # FormSubmit inquiry form & direct phone/WhatsApp
-│   │   ├── Footer.tsx          # Business details, quick links & copyright
-│   │   └── FloatingActions.tsx # WhatsApp, Call, & scroll-detected Back to Top
+│   ├── components/             # Modular React components
+│   │   ├── AdminDashboard.tsx      # Secure /admin-dashboard with Analytics & Vault
+│   │   ├── AuthModal.tsx           # Production Sign In / Sign Up dialog
+│   │   ├── ResinProductsSection.tsx# Display-only section: Keychains, Frames & Gifts
+│   │   ├── Navbar.tsx              # Top bar with auth indicators & mobile drawer
+│   │   ├── Hero.tsx                # Business hero with CTAs
+│   │   ├── ServicesSection.tsx     # 9 Core services catalog
+│   │   ├── GallerySection.tsx      # Dynamic public portfolio with published photos
+│   │   ├── WhyChooseUs.tsx         # 5 key competitive advantages
+│   │   ├── LocationSection.tsx     # Interactive Google Map (Odisha, India)
+│   │   ├── ContactSection.tsx      # Offline order form & WhatsApp channels
+│   │   ├── Footer.tsx              # Discrete Admin Portal link & copyright
+│   │   └── FloatingActions.tsx     # WhatsApp, Call & Back to Top controls
+│   ├── context/
+│   │   └── AuthContext.tsx         # Production JWT auth & role management
+│   ├── services/
+│   │   ├── analyticsService.ts     # Real pageview tracker & analytics reporting
+│   │   └── galleryService.ts       # Photo uploads, privacy toggle & vault storage
 │   ├── data/
-│   │   └── services.ts     # Service catalog & gallery data
-│   ├── App.tsx             # Root page layout & section composition
-│   ├── main.tsx            # React 19 entry point
-│   └── index.css           # Tailwind CSS & custom desi motif patterns
-├── index.html              # SEO metadata, OpenGraph tags & typography
-├── package.json            # Scripts and dependencies
-├── tsconfig.json           # TypeScript configuration
-├── vercel.json             # Vercel deployment & SPA routing configuration
-└── vite.config.ts          # Vite configuration with Tailwind CSS & ESM paths
+│   │   ├── resinProducts.ts        # Resin Keychains, Frames, and Gifts data
+│   │   └── services.ts             # Services and gallery sample catalog
+│   ├── types/
+│   │   └── auth.ts                 # TypeScript interfaces for auth & analytics
+│   ├── App.tsx                 # Route guard, layout & section composition
+│   └── main.tsx                # React 19 entry point
+├── server.ts                   # Full-stack Express server with Auth & Analytics APIs
+├── vercel.json                 # Vercel deployment & SPA routing configuration
+└── vite.config.ts              # Vite configuration with Tailwind CSS & ESM paths
 ```
 
 ---

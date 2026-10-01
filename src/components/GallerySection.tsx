@@ -1,14 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, MapPin, Sparkles } from 'lucide-react';
 import { GALLERY_ITEMS, GalleryItem } from '../data/services';
+import { getPublicGalleryPhotos } from '../services/galleryService';
+import { CustomGalleryItem } from '../types/auth';
 
 export const GallerySection: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('all');
-  const [previewItem, setPreviewItem] = useState<GalleryItem | null>(null);
+  const [previewItem, setPreviewItem] = useState<GalleryItem | CustomGalleryItem | null>(null);
+  const [customPublicPhotos, setCustomPublicPhotos] = useState<CustomGalleryItem[]>([]);
+
+  const loadPhotos = async () => {
+    try {
+      const photos = await getPublicGalleryPhotos();
+      setCustomPublicPhotos(photos);
+    } catch {
+      // fallback
+    }
+  };
+
+  useEffect(() => {
+    loadPhotos();
+
+    const handleUpdate = () => {
+      loadPhotos();
+    };
+
+    window.addEventListener('sangram_gallery_updated', handleUpdate);
+    return () => window.removeEventListener('sangram_gallery_updated', handleUpdate);
+  }, []);
+
+  // Merge static gallery items with dynamically published public items from Admin
+  const allPublicItems = [...customPublicPhotos, ...GALLERY_ITEMS];
 
   const filteredItems = activeFilter === 'all'
-    ? GALLERY_ITEMS
-    : GALLERY_ITEMS.filter((item) => item.category === activeFilter);
+    ? allPublicItems
+    : allPublicItems.filter((item) => item.category === activeFilter);
 
   const filters = [
     { id: 'all', label: 'All Works' },
@@ -31,10 +57,10 @@ export const GallerySection: React.FC = () => {
               <span>Portfolio Showcase</span>
             </div>
             <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-[#0A192F] tracking-tight">
-              Sample Works &amp; Real Prints
+              Sample Works &amp; Real Art Pieces
             </h2>
             <p className="mt-3 text-base text-slate-600">
-              Browse samples of completed flex banners, luminous storefront signs, wedding invitation cards, and custom vinyl jobs.
+              Browse samples of completed epoxy resin art, luminous storefront signs, flex banners, and custom invites.
             </p>
           </div>
 
@@ -94,7 +120,7 @@ export const GallerySection: React.FC = () => {
                 <h3 className="font-heading text-base font-bold text-[#0A192F]">
                   {item.title}
                 </h3>
-                <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
+                <p className="mt-1.5 text-xs text-slate-500 leading-relaxed line-clamp-2">
                   {item.caption}
                 </p>
               </div>
@@ -122,7 +148,7 @@ export const GallerySection: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setPreviewItem(null)}
-                  className="absolute top-3 right-3 p-2 rounded-full bg-black/60 text-white hover:bg-black transition-colors"
+                  className="absolute top-3 right-3 p-2 rounded-full bg-black/60 text-white hover:bg-black transition-colors cursor-pointer"
                 >
                   ✕
                 </button>
@@ -138,17 +164,17 @@ export const GallerySection: React.FC = () => {
                   {previewItem.caption}
                 </p>
                 <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="text-xs text-slate-500">
-                    Visit shop with your text or design concept for immediate production.
+                  <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                    <MapPin className="w-4 h-4 text-[#0A192F]" />
+                    <span>Sangram Resin Art, Odisha, India</span>
                   </div>
                   <a
                     href="https://www.google.com/maps?q=20.769753,86.468659"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#D4AF37] text-[#0A192F] text-xs font-bold hover:bg-[#B89628]"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#D4AF37] hover:bg-[#B89628] text-[#0A192F] text-xs font-bold transition-all shadow-xs"
                   >
-                    <MapPin className="w-3.5 h-3.5" />
-                    <span>Get Directions to Store</span>
+                    <span>Visit Shop to Order</span>
                   </a>
                 </div>
               </div>

@@ -1,7 +1,14 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Printer, ArrowUp, Navigation } from 'lucide-react';
+import { MapPin, Phone, Mail, Printer, ArrowUp, Navigation, Lock, ShieldCheck } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onNavigateToAdmin?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onNavigateToAdmin }) => {
+  const { user, isAdmin, openAuthModal } = useAuth();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -9,6 +16,19 @@ export const Footer: React.FC = () => {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleAdminClick = () => {
+    if (isAdmin) {
+      if (onNavigateToAdmin) {
+        onNavigateToAdmin();
+      } else {
+        window.history.pushState({}, '', '/admin-dashboard');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+    } else {
+      openAuthModal('login');
+    }
   };
 
   return (
@@ -50,8 +70,16 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
               <li>
                 <button
+                  onClick={() => scrollTo('resin-products')}
+                  className="hover:text-[#D4AF37] text-white font-semibold transition-colors cursor-pointer text-left"
+                >
+                  Resin Products (Keychains &amp; Frames)
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => scrollTo('services')}
-                  className="hover:text-white transition-colors cursor-pointer"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
                   Custom Resin Name Plates
                 </button>
@@ -59,7 +87,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollTo('services')}
-                  className="hover:text-white transition-colors cursor-pointer"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
                   Resin Wall Clocks &amp; Geode Art
                 </button>
@@ -67,7 +95,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollTo('services')}
-                  className="hover:text-white transition-colors cursor-pointer"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
                   Wedding Varmala Keepsakes
                 </button>
@@ -75,7 +103,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollTo('services')}
-                  className="hover:text-white transition-colors cursor-pointer"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
                   Flex Banner Printing
                 </button>
@@ -83,7 +111,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollTo('services')}
-                  className="hover:text-white transition-colors cursor-pointer"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
                   Visiting &amp; Wedding Cards
                 </button>
@@ -91,7 +119,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollTo('services')}
-                  className="hover:text-white transition-colors cursor-pointer"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
                   3D Acrylic Shop Boards
                 </button>
@@ -140,12 +168,23 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* Bottom copyright line */}
+        {/* Bottom copyright line with discrete Admin Portal link */}
         <div className="mt-12 pt-8 border-t border-[#1E3A5F] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© 2026 Sangram Printing &amp; Design Studio. All rights reserved.</p>
+          <p>© 2026 Sangram Resin Art. All rights reserved.</p>
 
           <div className="flex items-center gap-4">
             <span>Offline Local Business · Odisha, India</span>
+            
+            {/* Discrete Admin Dashboard Entry */}
+            <button
+              onClick={handleAdminClick}
+              className="text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1 cursor-pointer"
+              title="Admin Portal"
+            >
+              <Lock className="w-3 h-3 text-[#D4AF37]" />
+              <span>{isAdmin ? 'Admin Dashboard' : 'Admin Portal'}</span>
+            </button>
+
             <button
               onClick={scrollToTop}
               className="p-2 rounded-lg bg-[#112240] hover:bg-[#1E3A5F] text-slate-300 hover:text-white transition-colors cursor-pointer"
