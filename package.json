@@ -3,7 +3,21 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "scripts": {"dev":"vite","build":"tsc -b && vite build","preview":"vite preview"},
-  "dependencies": {"@vitejs/plugin-react":"latest","@tailwindcss/vite":"latest","tailwindcss":"latest","typescript":"latest","vite":"latest","react":"latest","react-dom":"latest","lucide-react":"latest"},
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.6.1",
+    "@vitejs/plugin-react": "latest",
+    "@tailwindcss/vite": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "lucide-react": "latest"
+  },
   "devDependencies": {}
 }
