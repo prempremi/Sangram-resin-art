@@ -347,10 +347,9 @@ async function createUploadUrl(
    */
 
   const token = await issueSignedToken({
-    pathname,
-access: 'private',
-    operations: ['put'],
-  });
+  pathname,
+  operations: ['put'],
+});
 
 const result = await presignUrl(token, {
   pathname,
