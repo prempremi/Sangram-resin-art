@@ -268,7 +268,8 @@ async function getPrivateImageUrl(
   pathname: string
 ): Promise<string> {
   const token = await issueSignedToken({
-    pathname,
+ pathname,
+access: 'private',
     operations: ['get'],
   });
 
@@ -356,15 +357,16 @@ async function createUploadUrl(
 
   const token = await issueSignedToken({
     pathname,
+access: 'private',
     operations: ['put'],
   });
 
-  const result = await presignUrl(token, {
-    pathname,
-    operation: 'put',
-    validUntil:
-      Date.now() + 15 * 60 * 1000,
-  });
+const result = await presignUrl(token, {
+  pathname,
+  access: 'private',
+  operation: 'put',
+  validUntil: Date.now() + 15 * 60 * 1000,
+});
 
   return json({
     success: true,
