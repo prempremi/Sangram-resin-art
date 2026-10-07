@@ -264,20 +264,11 @@ async function getMetadataById(
    PRIVATE IMAGE SIGNED URL
 --------------------------------------------------------- */
 
-async function getPrivateImageUrl(
-  pathname: string
-): Promise<string> {
-  const token = await issueSignedToken({
- pathname,
-access: 'private',
-    operations: ['get'],
-  });
-
-  const result = await presignUrl(token, {
-    pathname,
-    operation: 'get',
-    validUntil:
-      Date.now() + 60 * 60 * 1000,
+const result = await presignUrl(token, {
+  pathname,
+  access: 'private',
+  operation: 'get',
+});
     useCache: false,
   });
 
